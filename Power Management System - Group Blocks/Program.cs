@@ -87,7 +87,7 @@ namespace IngameScript
             }
 
             //Ends Iteration If No Hydrogen Engines or Reactors are Detected
-            if (!(hydrogenEnginesExist || reactorsExist))
+            if (!hydrogenEnginesExist && !reactorsExist)
             {
                 Echo("No Hydrogen Engines or Reactors are Detected");
                 return;
@@ -122,10 +122,9 @@ namespace IngameScript
         {
             if (hydrogenEnginesExist)
             {
-                List<IMyPowerProducer> blocks = hydrogenEngines;
                 if (chargeLevel < hydrogenEnginesToggleMinThreshold)
                 {
-                    foreach (IMyPowerProducer block in blocks)
+                    foreach (IMyPowerProducer block in hydrogenEngines)
                     {
                         block.Enabled = true;
                     }
@@ -133,7 +132,7 @@ namespace IngameScript
                 }
                 else if (chargeLevel >= hydrogenEnginesToggleMaxThreshold)
                 {
-                    foreach (IMyPowerProducer block in blocks)
+                    foreach (IMyPowerProducer block in hydrogenEngines)
                     {
                         block.Enabled = false;
                     }
@@ -142,10 +141,9 @@ namespace IngameScript
             }
             if (reactorsExist)
             {
-                List<IMyPowerProducer> blocks = reactors;
                 if (chargeLevel < reactorsToggleMinThreshold)
                 {
-                    foreach (IMyPowerProducer block in blocks)
+                    foreach (IMyPowerProducer block in reactors)
                     {
                         block.Enabled = true;
                     }
@@ -153,7 +151,7 @@ namespace IngameScript
                 }
                 else if(chargeLevel >= reactorsToggleMaxThreshold)
                 {
-                    foreach (IMyPowerProducer block in blocks)
+                    foreach (IMyPowerProducer block in reactors)
                     {
                         block.Enabled = false;
                     }
