@@ -29,7 +29,9 @@ namespace IngameScript
         //This Script will toggle Hydrogen Engines and Reactors on and off based on Batteries average Charge Level
         //
 
+        //
         //REQUIRED SETUP:
+        //
         //Input the Batteries' Group Name in between the quotation marks ("")
         public string batteriesGroupName = "Dover Base - Batteries - Power";
         //Input the Hydrogen Engines' Group Name in between the quotation marks ("")
@@ -70,7 +72,7 @@ namespace IngameScript
 
             //Detect Hydrogen Engines
             bool hydrogenEnginesExist = true;
-            List<IMyPowerProducer> hydrogenEngines = hydrogenEnginesListGenerator();
+            List<IMyPowerProducer> hydrogenEngines = powerProducerListGenerator(hydrogenEnginesGroupName);
             if (hydrogenEngines.Count == 0)
             {
                 hydrogenEnginesExist = false;
@@ -79,7 +81,7 @@ namespace IngameScript
 
             //Detect Reactors
             bool reactorsExist = true;
-            List<IMyPowerProducer> reactors = reactorsListGenerator();
+            List<IMyPowerProducer> reactors = powerProducerListGenerator(reactorsGroupName);
             if (reactors.Count == 0)
             {
                 reactorsExist = false;
@@ -169,6 +171,16 @@ namespace IngameScript
 
             return batteries;
         }
+
+        public List<IMyPowerProducer> powerProducerListGenerator(string powerProducersGroupName)
+        {
+            IMyBlockGroup powerProducersGroup = GridTerminalSystem.GetBlockGroupWithName(powerProducersGroupName) as IMyBlockGroup;
+            List<IMyPowerProducer> powerProducers = new List<IMyPowerProducer>();
+            powerProducersGroup.GetBlocksOfType(powerProducers);
+
+            return powerProducers;
+        }
+
         public List<IMyPowerProducer> hydrogenEnginesListGenerator()
         {
             IMyBlockGroup hydrogenEnginesGroup = GridTerminalSystem.GetBlockGroupWithName(hydrogenEnginesGroupName) as IMyBlockGroup;
@@ -177,6 +189,7 @@ namespace IngameScript
 
             return hydrogenEngines;
         }
+
         public List<IMyPowerProducer> reactorsListGenerator()
         {
             IMyBlockGroup reactorsGroup = GridTerminalSystem.GetBlockGroupWithName(reactorsGroupName) as IMyBlockGroup;
