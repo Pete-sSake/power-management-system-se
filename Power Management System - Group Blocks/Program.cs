@@ -180,23 +180,5 @@ namespace IngameScript
 
             return powerProducers;
         }
-
-        public List<IMyPowerProducer> hydrogenEnginesListGenerator()
-        {
-            IMyBlockGroup hydrogenEnginesGroup = GridTerminalSystem.GetBlockGroupWithName(hydrogenEnginesGroupName) as IMyBlockGroup;
-            List<IMyPowerProducer> hydrogenEngines = new List<IMyPowerProducer>();
-            hydrogenEnginesGroup.GetBlocksOfType(hydrogenEngines);
-
-            return hydrogenEngines;
-        }
-
-        public List<IMyPowerProducer> reactorsListGenerator()
-        {
-            IMyBlockGroup reactorsGroup = GridTerminalSystem.GetBlockGroupWithName(reactorsGroupName) as IMyBlockGroup;
-            List<IMyPowerProducer> reactors = new List<IMyPowerProducer>();
-            reactorsGroup.GetBlocksOfType(reactors);
-
-            return reactors;
-        }
     }
 }
