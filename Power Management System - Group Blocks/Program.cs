@@ -162,7 +162,7 @@ namespace IngameScript
             }
         }
 
-        //Next 3 methods Create Lists of Blocks by type. From the names of Block Groups in the terminal.
+        //Creates Lists of Batteries. Adds only if the Battery is at least functional
         public List<IMyBatteryBlock> batteriesListGenerator()
         {
             IMyBlockGroup batteriesGroup = GridTerminalSystem.GetBlockGroupWithName(batteriesGroupName) as IMyBlockGroup;
@@ -172,6 +172,7 @@ namespace IngameScript
             return batteries;
         }
 
+        //Creates List of Power Producer Blocks. Input obtained from Setup Variables
         public List<IMyPowerProducer> powerProducerListGenerator(string powerProducersGroupName)
         {
             IMyBlockGroup powerProducersGroup = GridTerminalSystem.GetBlockGroupWithName(powerProducersGroupName) as IMyBlockGroup;
