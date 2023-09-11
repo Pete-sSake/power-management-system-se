@@ -24,14 +24,14 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // Power Management System
-        // 
-        //This Script will toggle Hydrogen Engines and Reactors on and off based on Batteries average Charge Level
-        //
+        /*Power Management System
+        
+        This Script will toggle Hydrogen Engines and Reactors on and off based on Batteries average Charge Level
+        */
 
-        //
-        //REQUIRED SETUP:
-        //
+        /*REQUIRED SETUP:
+        */
+
         //Input the Batteries' Group Name in between the quotation marks ("")
         public string batteriesGroupName = "Dover Base - Batteries - Power";
         //Input the Hydrogen Engines' Group Name in between the quotation marks ("")
@@ -39,7 +39,8 @@ namespace IngameScript
         //Input the Hydrogen Reactors' Group Name in between the quotation marks ("")
         public string reactorsGroupName = "Dover Base - Reactors - Power";
 
-        //OPTIONAL SETUP
+        /*OPTIONAL SETUP
+        */
         //Replace the "0.20" with the decimal value of the percentage at which the Hydrogen Engines will turn ON
         public float hydrogenEnginesToggleMinThreshold = 0.20f;
         //Replace the "0.35" with the decimal value of the percentage at which the Hydrogen Engines will turn OFF
@@ -49,11 +50,10 @@ namespace IngameScript
         //Replace the "0.25" with the decimal value of the percentage at which the Reactors will turn OFF
         public float reactorsToggleMaxThreshold = 0.25f;
 
-        // 
-        // 
-        //DO NOT MODIFY BELOW THIS LINE
-        // 
-        // 
+        /*DO NOT MODIFY BELOW THIS LINE
+        //
+        //
+        */ 
 
         public Program()
         {
@@ -95,28 +95,15 @@ namespace IngameScript
                 return;
             }
 
+            //Prints Average Charge Level of Batteries
             float chargeLevel = chargeLevelCalculator(batteries);
             double charge = Math.Round(chargeLevel * 100, 2);
-            Echo("Battery Charge at " +  charge + "%");
+            Echo("Battery Charge:   " +  charge + "%");
 
-            //Turns Hydrogen Engines and Reactors ON or OFF base on batteries Charge Level
+            //Turns Hydrogen Engines and Reactors ON or OFF based on batteries Charge Level
             powerProducersToggle(chargeLevel, hydrogenEnginesExist, reactorsExist, hydrogenEngines, reactors);
 
         }//End of Main method
-
-        //Calculates Charge Level of all functional batteries as Current Charge divided by Max Charge
-        public float chargeLevelCalculator(List<IMyBatteryBlock> blocks)
-        {
-            float chargeSum = 0;
-            float maxChargeSum = 0;
-            foreach (IMyBatteryBlock block in blocks)
-            {
-                chargeSum += block.CurrentStoredPower;
-                maxChargeSum += block.MaxStoredPower;
-            }
-
-            return chargeSum / maxChargeSum;
-        }                
 
         //Turns Hydrogen Engines and Reactors ON or OFF base on batteries Charge Level
         public void powerProducersToggle(float chargeLevel, bool hydrogenEnginesExist, bool reactorsExist,
@@ -130,7 +117,6 @@ namespace IngameScript
                     {
                         block.Enabled = true;
                     }
-                    Echo("Hydrogen Engines are ON");
                 }
                 else if (chargeLevel >= hydrogenEnginesToggleMaxThreshold)
                 {
@@ -138,7 +124,24 @@ namespace IngameScript
                     {
                         block.Enabled = false;
                     }
-                    Echo("Hydrogen Engines are OFF");
+                }
+                {
+                    bool enabled = false;
+                    foreach (IMyPowerProducer block in hydrogenEngines)
+                    {
+                        if (block.Enabled == true)
+                        {
+                            enabled = true;
+                        }
+                    }
+                    if (enabled)
+                    {
+                        Echo("Hydrogen Engines:   ON");
+                    }
+                    else
+                    {
+                        Echo("Hydrogen Engines:   OFF");
+                    }
                 }
             }
             if (reactorsExist)
@@ -149,19 +152,49 @@ namespace IngameScript
                     {
                         block.Enabled = true;
                     }
-                    Echo("Reactors are ON");
                 }
-                else if(chargeLevel >= reactorsToggleMaxThreshold)
+                else if (chargeLevel >= reactorsToggleMaxThreshold)
                 {
                     foreach (IMyPowerProducer block in reactors)
                     {
                         block.Enabled = false;
                     }
-                    Echo("Reactors are OFF");
+                }
+                {
+                    bool enabled = false;
+                    foreach (IMyPowerProducer block in reactors)
+                    {
+                        if (block.Enabled == true)
+                        {
+                            enabled = true;
+                        }
+                    }
+                    if (enabled)
+                    {
+                        Echo("Reactors:   ON");
+                    }
+                    else
+                    {
+                        Echo("Reactors:   OFF");
+                    }
                 }
             }
         }
 
+        //Calculates Charge Level of all functional batteries as Current Charge divided by Max Charge
+        public float chargeLevelCalculator(List<IMyBatteryBlock> batteries)
+        {
+            float chargeSum = 0;
+            float maxChargeSum = 0;
+            foreach (IMyBatteryBlock batterie in batteries)
+            {
+                chargeSum += batterie.CurrentStoredPower;
+                maxChargeSum += batterie.MaxStoredPower;
+            }
+
+            return chargeSum / maxChargeSum;
+        }                
+                
         //Creates Lists of Batteries. Adds only if the Battery is at least functional
         public List<IMyBatteryBlock> batteriesListGenerator()
         {
@@ -172,12 +205,12 @@ namespace IngameScript
             return batteries;
         }
 
-        //Creates List of Power Producer Blocks. Input obtained from Setup Variables
+        //Creates List of Power Producer Blocks. Adds only if the Power Producer is at least functional
         public List<IMyPowerProducer> powerProducerListGenerator(string powerProducersGroupName)
         {
             IMyBlockGroup powerProducersGroup = GridTerminalSystem.GetBlockGroupWithName(powerProducersGroupName) as IMyBlockGroup;
             List<IMyPowerProducer> powerProducers = new List<IMyPowerProducer>();
-            powerProducersGroup.GetBlocksOfType(powerProducers);
+            powerProducersGroup.GetBlocksOfType(powerProducers, powP => powP.IsFunctional);
 
             return powerProducers;
         }
